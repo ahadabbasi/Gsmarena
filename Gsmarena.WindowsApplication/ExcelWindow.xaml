@@ -1,0 +1,229 @@
+﻿<Window x:Class="Gsmarena.WindowsApplication.ExcelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:Gsmarena.WindowsApplication"
+        mc:Ignorable="d"
+        Title="Excel Window" WindowStartupLocation="CenterScreen" Height="700" Width="800">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="0.15*" />
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        
+        <Grid Margin="5" Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Brand" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Brand, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Url" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Url, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Name" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Name, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Networks" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Networks, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="2" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Operation System" />
+            <TextBox Grid.Row="1" Text="{Binding Path=OperationSystem, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="2" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Operation System Version" />
+            <TextBox Grid.Row="1" Text="{Binding Path=OperationSystemVersion, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="3" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Chipset Model" />
+            <TextBox Grid.Row="1" Text="{Binding Path=CpuModel, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="3" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Count of Thread" />
+            <TextBox Grid.Row="1" Text="{Binding Path=CountOfThread, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="4" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Battery Capacity" />
+            <TextBox Grid.Row="1" Text="{Binding Path=BatteryCapacity, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="4" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Weight" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Weight, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="5" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Display Size" />
+            <TextBox Grid.Row="1" Text="{Binding Path=DisplaySize, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="5" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Display Ratio" />
+            <TextBox Grid.Row="1" Text="{Binding Path=DisplayRatio, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="6" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Resolution" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Resolution, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="6" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Memory Internal" />
+            <TextBox Grid.Row="1" Text="{Binding Path=MemoryInternal, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="7" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Release Date" />
+            <TextBox Grid.Row="1" Text="{Binding Path=ReleaseDate, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="7" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Announce Date" />
+            <TextBox Grid.Row="1" Text="{Binding Path=AnnounceDate, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="8" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Main Camera" />
+            <TextBox Grid.Row="1" Text="{Binding Path=MainCamera, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="8" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Selfie Camera" />
+            <TextBox Grid.Row="1" Text="{Binding Path=SelfieCamera, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="9" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Technology" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Technology, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="9" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Price" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Price, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Margin="5" Grid.Row="10" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Dimension" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Dimension, Mode=TwoWay}" />
+        </Grid>
+        
+        <Grid Grid.Row="11" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.15*" />
+            </Grid.ColumnDefinitions>
+            
+            <Button Grid.Column="1" Content="Save" x:Name="SaveBtn" Click="SaveBtn_OnClick" />
+        </Grid>
+        
+    </Grid>
+</Window>
