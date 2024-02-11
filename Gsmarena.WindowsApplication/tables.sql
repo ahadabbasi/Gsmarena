@@ -78,7 +78,7 @@ CREATE TABLE `devices_cameras`
 (
     `id`        INTEGER AUTO_INCREMENT NOT NULL,
     `pixel`     DECIMAL                NOT NULL,
-    `position`  ENUM ('back', 'front') NOT NULL,
+    `position`  ENUM ('BACK', 'FRONT') NOT NULL,
     `type`      NVARCHAR(200)          NULL,
     `device_id` INTEGER                NOT NULL,
     PRIMARY KEY (`id`),
@@ -95,6 +95,18 @@ CREATE TABLE `devices_networks`
     PRIMARY KEY (`id`),
     FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`),
     FOREIGN KEY (`network_id`) REFERENCES `networks` (`id`)
+)
+    CHARACTER SET `utf8mb4`
+    COLLATE `utf8mb4_general_ci`;
+
+CREATE TABLE `devices_technologies`
+(
+    `id`            INTEGER AUTO_INCREMENT NOT NULL,
+    `device_id`     INTEGER                NOT NULL,
+    `technology_id` INTEGER                NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`),
+    FOREIGN KEY (`technology_id`) REFERENCES `technologies` (`id`)
 )
     CHARACTER SET `utf8mb4`
     COLLATE `utf8mb4_general_ci`;
