@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using MySql.Data.MySqlClient;
 
 namespace Gsmarena.WindowsApplication.Models.ViewModels;
 
@@ -69,6 +70,22 @@ public class DatabaseVM : INotifyPropertyChanged
         {
             _database = value;
             OnPropertyChanged(nameof(Database));
+        }
+    }
+
+    public string ConnectionString
+    {
+        get
+        {
+            MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder()
+            {
+                Server = _server,
+                Database = _database,
+                UserID = _username,
+                Password = _password
+            };
+
+            return builder.ConnectionString;
         }
     }
 }
