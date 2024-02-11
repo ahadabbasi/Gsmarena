@@ -285,5 +285,10 @@ namespace Gsmarena.WindowsApplication
                 }
             }
         }
+
+        private void DeleteBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            DataBinding.Delete(DataBinding.Choose);
+        }
     }
 }
