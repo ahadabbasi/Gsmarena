@@ -450,6 +450,18 @@ namespace Gsmarena.WindowsApplication
                         Position = camera.Position.ToString().ToUpper()
                     });
                 }
+
+                foreach (MemoryCapacity memory in DataBinding.Choose.Memories)
+                {
+                    await context.Memory.SaveAsync(new MemoryDTO()
+                    {
+                        DeviceId = deviceId,
+                        MemorySize = decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfInternal)),
+                        MemoryUnit = memory.UnitOfInternal,
+                        RamSize = memory.SizeOfRam != null ? decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfRam)) : null,
+                        RamUnit = memory.SizeOfRam != null ? memory.UnitOfRam : null
+                    });
+                }
             }
         }
 

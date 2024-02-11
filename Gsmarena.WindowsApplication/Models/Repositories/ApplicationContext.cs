@@ -119,6 +119,21 @@ public class ApplicationContext
             return _technology;
         }
     }
+    
+    private MemoryRepository? _memory;
+
+    public MemoryRepository Memory
+    {
+        get
+        {
+            if (_memory == null)
+            {
+                _memory = new MemoryRepository(ConnectionString);
+            }
+
+            return _memory;
+        }
+    }
 
     public async Task CreateTable()
     {

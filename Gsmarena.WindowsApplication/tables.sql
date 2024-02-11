@@ -1,4 +1,25 @@
-﻿
+﻿DROP TABLE IF EXISTS `devices_dimensions`;
+
+DROP TABLE IF EXISTS `devices_cameras`;
+
+DROP TABLE IF EXISTS `devices_networks`;
+
+DROP TABLE IF EXISTS `devices_technologies`;
+
+DROP TABLE IF EXISTS `devices_memories`;
+
+DROP TABLE IF EXISTS `devices`;
+
+DROP TABLE IF EXISTS `brands`;
+
+DROP TABLE IF EXISTS `networks`;
+
+DROP TABLE IF EXISTS `unit_of_memories`;
+
+DROP TABLE IF EXISTS `operation_systems`;
+
+DROP TABLE IF EXISTS `technologies`;
+
 CREATE TABLE `brands`
 (
     `id`   INTEGER AUTO_INCREMENT NOT NULL,
@@ -13,6 +34,18 @@ CREATE TABLE `networks`
     `id`   INTEGER AUTO_INCREMENT NOT NULL,
     `name` NVARCHAR(200)          NOT NULL,
     PRIMARY KEY (`id`)
+)
+    CHARACTER SET `utf8mb4`
+    COLLATE `utf8mb4_general_ci`;
+
+CREATE TABLE `unit_of_memories`
+(
+    `id`        INTEGER AUTO_INCREMENT NOT NULL,
+    `name`      NVARCHAR(200)          NOT NULL,
+    `parent_id` INTEGER                NULL,
+    `exchange`  INTEGER                NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`parent_id`) REFERENCES `unit_of_memories` (`id`)
 )
     CHARACTER SET `utf8mb4`
     COLLATE `utf8mb4_general_ci`;
@@ -110,3 +143,23 @@ CREATE TABLE `devices_technologies`
 )
     CHARACTER SET `utf8mb4`
     COLLATE `utf8mb4_general_ci`;
+
+CREATE TABLE `devices_memories`
+(
+    `id`             INTEGER AUTO_INCREMENT NOT NULL,
+    `device_id`      INTEGER                NOT NULL,
+    `memory_size`    DECIMAL                NOT NULL,
+    `memory_unit_id` INTEGER                NOT NULL,
+    `ram_size`       DECIMAL                NULL,
+    `ram_unit_id`    INTEGER                NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`),
+    FOREIGN KEY (`memory_unit_id`) REFERENCES `unit_of_memories` (`id`),
+    FOREIGN KEY (`ram_unit_id`) REFERENCES `unit_of_memories` (`id`)
+)
+    CHARACTER SET `utf8mb4`
+    COLLATE `utf8mb4_general_ci`;
+
+INSERT INTO `unit_of_memories`(`name`) VALUE ('MB');
+INSERT INTO `unit_of_memories`(`name`, `parent_id`, `exchange`) SELECT 'GB', (SELECT MAX(`id`) FROM `unit_of_memories`), 1024;
+INSERT INTO `unit_of_memories`(`name`, `parent_id`, `exchange`) SELECT 'TB', (SELECT MAX(`id`) FROM `unit_of_memories`), 1024;
