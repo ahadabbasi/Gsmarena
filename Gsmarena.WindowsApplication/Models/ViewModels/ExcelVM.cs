@@ -265,7 +265,7 @@ public class ExcelVM : INotifyPropertyChanged
         }
     }
     
-    private string _price = "K";
+    private string _price = "AW";
 
     public string Price
     {

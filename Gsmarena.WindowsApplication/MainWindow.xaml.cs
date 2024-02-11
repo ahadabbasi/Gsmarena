@@ -100,7 +100,7 @@ namespace Gsmarena.WindowsApplication
                     {
                         brandName = brandName.Substring(0, brandName.Length - 1);
                     }
-                    
+
                     WorkBook book = WorkBook.LoadExcel(fileDialog.FileName);
                     WorkSheet sheet = book.WorkSheets.First();
 
@@ -113,8 +113,10 @@ namespace Gsmarena.WindowsApplication
                             Device device = new Device()
                             {
                                 Type = Enum.Parse<DeviceType>(deviceType),
-                                Brand = !string.IsNullOrEmpty(brandName) ? brandName : sheet[$"{ExcelDataBinding.Brand}{count}"]
-                                    .ToString(),
+                                Brand = !string.IsNullOrEmpty(brandName)
+                                    ? brandName
+                                    : sheet[$"{ExcelDataBinding.Brand}{count}"]
+                                        .ToString(),
                                 Url = sheet[$"{ExcelDataBinding.Url}{count}"]
                                     .ToString(), //sheet[$"B{count}"].ToString(),
                                 Name = sheet[$"{ExcelDataBinding.Name}{count}"]
@@ -241,7 +243,7 @@ namespace Gsmarena.WindowsApplication
                             pattern =
                                 @"(?<Internal>(?<SizeOfInternal>\d+(.\d+)?)(?<UnitOfInternal>\w+))\s(?<Ram>(?<SizeOfRam>\d+(.\d+)?)(?<UnitOfRam>\w+)\sRAM)";
                             value = sheet[$"{ExcelDataBinding.MemoryInternal}{count}"]
-                                .ToString(); // sheet[$"Y{count}"].ToString();
+                                .ToString();
                             if (Regex.IsMatch(value, pattern))
                             {
                                 device.Memories = Regex.Matches(value, pattern).Select(matchItem => new MemoryCapacity()
@@ -287,7 +289,7 @@ namespace Gsmarena.WindowsApplication
 
                             pattern = @"(?<Pixel>\d+(.\d+)?)\sMP(.*\((?<Type>[\w\s]+)\))?";
                             value = sheet[$"{ExcelDataBinding.MainCamera}{count}"]
-                                .ToString(); // sheet[$"AA{count}"].ToString();
+                                .ToString();
 
                             IList<Camera> cameras = new List<Camera>();
 
@@ -316,7 +318,7 @@ namespace Gsmarena.WindowsApplication
                             }
 
                             value = sheet[$"{ExcelDataBinding.SelfieCamera}{count}"]
-                                .ToString(); // sheet[$"AE{count}"].ToString();
+                                .ToString();
 
                             if (Regex.IsMatch(value, pattern))
                             {
@@ -344,11 +346,35 @@ namespace Gsmarena.WindowsApplication
 
                             device.Cameras = cameras;
 
-                            value = sheet[$"{ExcelDataBinding.Technology}{count}"]
-                                .ToString(); // sheet[$"K{count}"].ToString();
+                            value = sheet[$"{ExcelDataBinding.Technology}{count}"].ToString();
 
                             device.Technologies = new[] { "Full-size", "Mini-SIM", "Micro-SIM", "Nano-SIM", "eSIM" }
                                 .Where(simType => value.ToLower().Contains(simType.ToLower()));
+
+                            value = sheet[$"{ExcelDataBinding.Price}{count}"]
+                                .ToString();
+                            pattern = @"\d+(.\d+)?";
+                            if (Regex.Matches(value, pattern).Count == 1)
+                            {
+                                match = Regex.Match(value, pattern);
+                                device.Price = float.Parse(match.Value);
+                            }
+                            else
+                            {
+                                foreach (KeyValuePair<string, float> priceUnit in new Dictionary<string, float>()
+                                         {
+                                             { "EUR", 1.0f }, { "USD", 1.3f }, { "GBP", 2.5f }, { "INR", 10.58f }
+                                         })
+                                {
+                                    pattern = @$"\'{priceUnit.Key}\'\:\s\'(?<Price>\d+(.\d+)?)\'";
+                                    if (Regex.IsMatch(value, pattern))
+                                    {
+                                        match = Regex.Match(value, pattern);
+                                        device.Price = float.Parse(match.Groups["Price"].Value) * priceUnit.Value;
+                                        break;
+                                    }
+                                }
+                            }
 
                             DataBinding.AddDevice(device);
                         }
@@ -408,7 +434,7 @@ namespace Gsmarena.WindowsApplication
                     DisplayRatio = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.DisplayRatio)),
                     PixelPerInch = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.PixelPerInch)),
                     ReleaseDate = DataBinding.Choose.ReleaseDate ?? DateTime.Now,
-                    Price = decimal.Parse(string.Format(TwoDigitsPattern, 458645.89348f)),
+                    Price = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.Price)),
                     OperationSystemId = operationId,
                     OperationSystemVersion = DataBinding.Choose.OperationSystemVersion
                 });
@@ -458,7 +484,9 @@ namespace Gsmarena.WindowsApplication
                         DeviceId = deviceId,
                         MemorySize = decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfInternal)),
                         MemoryUnit = memory.UnitOfInternal,
-                        RamSize = memory.SizeOfRam != null ? decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfRam)) : null,
+                        RamSize = memory.SizeOfRam != null
+                            ? decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfRam))
+                            : null,
                         RamUnit = memory.SizeOfRam != null ? memory.UnitOfRam : null
                     });
                 }
