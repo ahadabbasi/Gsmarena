@@ -1,4 +1,10 @@
-﻿namespace Gsmarena.WindowsApplication.Models.Repositories;
+﻿using System;
+using System.Data;
+using System.IO;
+using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
+
+namespace Gsmarena.WindowsApplication.Models.Repositories;
 
 public class ApplicationContext
 {
@@ -66,6 +72,72 @@ public class ApplicationContext
             }
 
             return _operationSystem;
+        }
+    }
+    
+    private CameraRepository? _camera;
+
+    public CameraRepository Camera
+    {
+        get
+        {
+            if (_camera == null)
+            {
+                _camera = new CameraRepository(ConnectionString);
+            }
+
+            return _camera;
+        }
+    }
+    
+    private DimensionRepository? _dimension;
+
+    public DimensionRepository Dimension
+    {
+        get
+        {
+            if (_dimension == null)
+            {
+                _dimension = new DimensionRepository(ConnectionString);
+            }
+
+            return _dimension;
+        }
+    }
+    
+    private TechnologyRepository? _technology;
+
+    public TechnologyRepository Technology
+    {
+        get
+        {
+            if (_technology == null)
+            {
+                _technology = new TechnologyRepository(ConnectionString);
+            }
+
+            return _technology;
+        }
+    }
+
+    public async Task CreateTable()
+    {
+        using (MySqlConnection connection = new MySqlConnection(ConnectionString))
+        {
+            using (MySqlCommand command = connection.CreateCommand())
+            {
+                command.CommandType = CommandType.Text;
+                command.CommandText =
+                    await File.ReadAllTextAsync(
+                        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tables.sql")
+                    );
+
+                await connection.OpenAsync();
+
+                await command.ExecuteNonQueryAsync();
+
+                await connection.CloseAsync();
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ public class DimensionRepository
     {
         get
         {
-            return "`networks`";
+            return "`devices_dimensions`";
         }
     }
 
@@ -59,6 +59,7 @@ public class DimensionRepository
     public async Task<int> SaveAsync(DimensionDTO entry)
     {
         int? result = await GetIdByDeviceIdAsync(entry.DeviceId);
+        
         if (result is null)
         {
             using (MySqlConnection connection = new MySqlConnection(ConnectionString))
@@ -83,10 +84,10 @@ public class DimensionRepository
 
                 }
             }
+            
+            result = await GetIdByDeviceIdAsync(entry.DeviceId);
         }
-
-        result = await GetIdByDeviceIdAsync(entry.DeviceId);
-
+        
         return result ?? 0;
     }
 
