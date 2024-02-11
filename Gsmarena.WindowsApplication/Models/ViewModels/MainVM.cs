@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,7 +10,7 @@ using Gsmarena.WindowsApplication.Models.Entities;
 
 namespace Gsmarena.WindowsApplication.Models.ViewModels;
 
-public class MainVM : INotifyPropertyChanged
+public class MainVM : INotifyPropertyChanged, IEnumerable<Device>
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -71,7 +72,17 @@ public class MainVM : INotifyPropertyChanged
                 break;
             }
 
-            if (value.GetType() == typeof(IEnumerable<string>) && (string.IsNullOrEmpty((string.Join(string.Empty, value)))))
+            if (value.GetType() == typeof(string[]))
+            {
+                string concat = string.Join(string.Empty, (string [])value);
+                if (concat.Length == 0)
+                {
+                    ChangeItemName(item, propertyName);
+                    break;
+                }
+            }
+
+            if (value.ToString() == "0")
             {
                 ChangeItemName(item, propertyName);
                 break;
@@ -92,5 +103,22 @@ public class MainVM : INotifyPropertyChanged
         _devices.Remove(item);
         OnPropertyChanged(nameof(Devices));
         Selected = string.Empty;
+    }
+
+    public IEnumerator<Device> GetEnumerator()
+    {
+        return _devices.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public void Clear()
+    {
+        _devices.Clear();
+        
+        OnPropertyChanged(nameof(Devices));
     }
 }
