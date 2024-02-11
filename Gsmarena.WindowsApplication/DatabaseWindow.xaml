@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="DatabaseWindow" Height="450" Width="800">
+        Title="DatabaseWindow" WindowStartupLocation="CenterScreen" Height="450" Width="800">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
