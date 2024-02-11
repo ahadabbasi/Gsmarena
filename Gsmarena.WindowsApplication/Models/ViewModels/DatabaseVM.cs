@@ -1,12 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace Gsmarena.WindowsApplication.Models.ViewModels;
 
 public class DatabaseVM : INotifyPropertyChanged
 {
+    
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -73,6 +80,7 @@ public class DatabaseVM : INotifyPropertyChanged
         }
     }
 
+    [JsonIgnore]
     public string ConnectionString
     {
         get
@@ -87,5 +95,50 @@ public class DatabaseVM : INotifyPropertyChanged
 
             return builder.ConnectionString;
         }
+    }
+
+    [JsonIgnore]
+    private static string FilePath
+    {
+        get
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{nameof(Database)}.json");
+        }
+    }
+
+    public async Task SaveAsync()
+    {
+        if (File.Exists(FilePath))
+        {
+            File.Delete(FilePath);
+        }
+
+        using (FileStream file = File.Create(FilePath))
+        {
+            byte[] content = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }));
+
+            await file.WriteAsync(content, 0, content.Length);
+        }
+    }
+
+    public static DatabaseVM Read()
+    {
+        DatabaseVM result = new DatabaseVM();
+        
+        if (File.Exists(FilePath))
+        {
+            string fileContent = File.ReadAllText(FilePath);
+            result = JsonSerializer.Deserialize<DatabaseVM>(fileContent, new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }) ?? result;
+        }
+
+        return result;
     }
 }
