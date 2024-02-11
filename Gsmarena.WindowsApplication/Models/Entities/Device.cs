@@ -124,4 +124,5 @@ public class Device
 
     public Dimension Dimension { get; set; } = new Dimension();
     public IEnumerable<Camera> Cameras { get; set; } = new Camera[] { };
+    public string Brand { get; set; } = string.Empty;
 }

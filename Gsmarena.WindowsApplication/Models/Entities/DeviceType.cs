@@ -2,7 +2,7 @@
 
 public enum DeviceType
 {
-    Mobile,
+    Phone,
     Tablet,
     Watch
 }

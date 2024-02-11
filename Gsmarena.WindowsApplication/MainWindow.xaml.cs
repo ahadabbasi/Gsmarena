@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
-using Gsmarena.WindowsApplication.Models;
 using Gsmarena.WindowsApplication.Models.Entities;
 using Gsmarena.WindowsApplication.Models.ViewModels;
 using IronXL;
@@ -17,6 +17,8 @@ namespace Gsmarena.WindowsApplication
     public partial class MainWindow : Window
     {
         protected MainVM DataBinding { get; }
+        protected DatabaseVM DatabaseDataBinding { get; }
+        private IEnumerable<string> DeviceTypes { get; }
         
         public MainWindow()
         {
@@ -24,6 +26,8 @@ namespace Gsmarena.WindowsApplication
             InitializeComponent();
             DataBinding = new MainVM();
             DataContext = DataBinding;
+            DatabaseDataBinding = new DatabaseVM();
+            DeviceTypes = Enum.GetNames(typeof(DeviceType));
         }
 
         private float ConvertMmToIn(float entry)
@@ -62,6 +66,23 @@ namespace Gsmarena.WindowsApplication
 
             if (resultOfShowDialog is not null && resultOfShowDialog == true)
             {
+                string fileName = Path.GetFileName(fileDialog.FileName).Replace(Path.GetExtension(fileDialog.FileName), string.Empty);
+                string brandName = fileName.ToUpper();
+                string deviceType = string.Empty; 
+
+                foreach (string type in DeviceTypes)
+                {
+                    if (brandName.Contains(type.ToUpper()))
+                    {
+                        deviceType = type;
+                        brandName = brandName.Replace(type.ToUpper(), string.Empty);
+                        break;
+                    }
+                    
+                }
+
+                brandName = brandName.Substring(0, brandName.Length - 1);
+                
                 WorkBook book = WorkBook.LoadExcel(fileDialog.FileName);
                 WorkSheet sheet = book.WorkSheets.First();
                 
@@ -71,6 +92,8 @@ namespace Gsmarena.WindowsApplication
                 {
                     Device device = new Device()
                     {
+                        Type = Enum.Parse<DeviceType>(deviceType),
+                        Brand = brandName,
                         Url = sheet[$"B{count}"].ToString(),
                         Name = sheet[$"C{count}"].ToString(),
                         Networks = sheet[$"D{count}"].ToString().Split("/"),
@@ -79,6 +102,11 @@ namespace Gsmarena.WindowsApplication
                         CountOfThread = sheet[$"V{count}"].ToString(),
                         DisplaySize = float.Parse(sheet[$"M{count}"].ToString())
                     };
+
+                    if (device.Type != DeviceType.Phone || device.DisplaySize >= 7)
+                    {
+                        device.Type = DeviceType.Tablet;
+                    }
 
                     string pattern = @"\d+";
                     string value = sheet[$"AS{count}"].ToString();
@@ -288,7 +316,19 @@ namespace Gsmarena.WindowsApplication
 
         private void DeleteBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            DataBinding.Delete(DataBinding.Choose);
+            if(DataBinding.Choose != null)
+                DataBinding.Delete(DataBinding.Choose);
+        }
+
+        private void DatabaseBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            DatabaseWindow databaseWindow = new DatabaseWindow(DatabaseDataBinding);
+            databaseWindow.ShowDialog();
+        }
+
+        private void SaveBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            //
         }
     }
 }
