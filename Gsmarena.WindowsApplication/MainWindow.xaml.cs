@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -33,7 +34,7 @@ namespace Gsmarena.WindowsApplication
             InitializeComponent();
             DataBinding = new MainVM();
             DataContext = DataBinding;
-            DatabaseDataBinding = new DatabaseVM();
+            DatabaseDataBinding = DatabaseVM.Read();
             DeviceTypes = Enum.GetNames(typeof(DeviceType));
             ExcelDataBinding = new ExcelVM();
         }
@@ -349,7 +350,8 @@ namespace Gsmarena.WindowsApplication
                             value = sheet[$"{ExcelDataBinding.Technology}{count}"].ToString();
 
                             device.Technologies = new[] { "Full-size", "Mini-SIM", "Micro-SIM", "Nano-SIM", "eSIM" }
-                                .Where(simType => value.ToLower().Contains(simType.ToLower()));
+                                .Where(simType => value.ToLower().Contains(simType.ToLower()))
+                                .ToArray();
 
                             value = sheet[$"{ExcelDataBinding.Price}{count}"]
                                 .ToString();
@@ -380,7 +382,7 @@ namespace Gsmarena.WindowsApplication
                         }
                         catch (Exception exception)
                         {
-                            MessageBox.Show(exception.Message);
+                            Debug.WriteLine(exception.Message);
                         }
 
                         count++;
@@ -392,7 +394,7 @@ namespace Gsmarena.WindowsApplication
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.Message);
+                Debug.WriteLine(exception.Message);
             }
         }
 
@@ -410,95 +412,155 @@ namespace Gsmarena.WindowsApplication
 
         private async void SaveBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            if (DataBinding.Choose != null)
+            saveBtn.IsEnabled = !saveBtn.IsEnabled;
+            
+            ApplicationContext context = new ApplicationContext(DatabaseDataBinding.ConnectionString);
+
+            foreach (Device device in DataBinding)
             {
-                ApplicationContext context = new ApplicationContext(DatabaseDataBinding.ConnectionString);
-
-                int brandId = await context.Brand.GetIdByNameAsync(DataBinding.Choose.Brand) ??
-                              await context.Brand.SaveAsync(DataBinding.Choose.Brand);
-
-                int operationId = await context.OperationSystem.GetIdByNameAsync(DataBinding.Choose.OperationSystem) ??
-                                  await context.OperationSystem.SaveAsync(DataBinding.Choose.OperationSystem);
-
-                int deviceId = await context.Device.SaveAsync(new DeviceDTO()
+                try
                 {
-                    Url = DataBinding.Choose.Url,
-                    Name = DataBinding.Choose.Name,
-                    BrandId = brandId,
-                    Weight = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.Weight)),
-                    BatteryCapacity = DataBinding.Choose.BatteryCapacity,
-                    CountOfThread = DataBinding.Choose.CountOfThread,
-                    CpuModel = DataBinding.Choose.CpuModel,
-                    Type = DataBinding.Choose.Type.ToString().ToUpper(),
-                    DisplaySize = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.DisplaySize)),
-                    DisplayRatio = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.DisplayRatio)),
-                    PixelPerInch = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.PixelPerInch)),
-                    ReleaseDate = DataBinding.Choose.ReleaseDate ?? DateTime.Now,
-                    Price = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.Price)),
-                    OperationSystemId = operationId,
-                    OperationSystemVersion = DataBinding.Choose.OperationSystemVersion
-                });
+                    int brandId = await context.Brand.GetIdByNameAsync(device.Brand) ??
+                                  await context.Brand.SaveAsync(device.Brand);
 
-                foreach (string network in DataBinding.Choose.Networks)
-                {
-                    int networkId = await context.Network.GetIdByNameAsync(network) ??
-                                    await context.Network.SaveAsync(network);
+                    int operationId = await context.OperationSystem.GetIdByNameAsync(device.OperationSystem) ??
+                                      await context.OperationSystem.SaveAsync(device.OperationSystem);
 
-                    await context.Network.SaveConnectToDeviceAsync(deviceId, networkId);
-                }
-
-                foreach (string technology in DataBinding.Choose.Technologies)
-                {
-                    int technologyId = await context.Technology.GetIdByNameAsync(technology) ??
-                                       await context.Technology.SaveAsync(technology);
-
-                    await context.Technology.SaveConnectToDeviceAsync(deviceId, technologyId);
-                }
-
-                if (DataBinding.Choose.Dimension != null)
-                {
-                    await context.Dimension.SaveAsync(new DimensionDTO()
+                    int deviceId = await context.Device.SaveAsync(new DeviceDTO()
                     {
-                        DeviceId = deviceId,
-                        Depth = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.Dimension.Depth)),
-                        Width = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.Dimension.Width)),
-                        Height = decimal.Parse(string.Format(TwoDigitsPattern, DataBinding.Choose.Dimension.Height))
+                        Url = device.Url,
+                        Name = device.Name,
+                        BrandId = brandId,
+                        Weight = decimal.Parse(string.Format(TwoDigitsPattern, device.Weight)),
+                        BatteryCapacity = device.BatteryCapacity,
+                        CountOfThread = device.CountOfThread,
+                        CpuModel = device.CpuModel,
+                        Type = device.Type.ToString().ToUpper(),
+                        DisplaySize = decimal.Parse(string.Format(TwoDigitsPattern, device.DisplaySize)),
+                        DisplayRatio = decimal.Parse(string.Format(TwoDigitsPattern, device.DisplayRatio)),
+                        PixelPerInch = decimal.Parse(string.Format(TwoDigitsPattern, device.PixelPerInch)),
+                        ReleaseDate = device.ReleaseDate ?? DateTime.Now,
+                        Price = decimal.Parse(string.Format(TwoDigitsPattern, device.Price)),
+                        OperationSystemId = operationId,
+                        OperationSystemVersion = device.OperationSystemVersion
                     });
-                }
 
-                foreach (Camera camera in DataBinding.Choose.Cameras)
-                {
-                    await context.Camera.SaveAsync(new CameraDTO()
+                    foreach (string network in device.Networks)
                     {
-                        DeviceId = deviceId,
-                        Pixel = decimal.Parse(string.Format(TwoDigitsPattern, camera.Pixel)),
-                        Type = camera.Type,
-                        Position = camera.Position.ToString().ToUpper()
-                    });
-                }
+                        try
+                        {
+                            int networkId = await context.Network.GetIdByNameAsync(network) ??
+                                            await context.Network.SaveAsync(network);
 
-                foreach (MemoryCapacity memory in DataBinding.Choose.Memories)
-                {
-                    await context.Memory.SaveAsync(new MemoryDTO()
+                            await context.Network.SaveConnectToDeviceAsync(deviceId, networkId);
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.WriteLine(exception.Message);
+                        }
+                    }
+
+                    foreach (string technology in device.Technologies)
                     {
-                        DeviceId = deviceId,
-                        MemorySize = decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfInternal)),
-                        MemoryUnit = memory.UnitOfInternal,
-                        RamSize = memory.SizeOfRam != null
-                            ? decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfRam))
-                            : null,
-                        RamUnit = memory.SizeOfRam != null ? memory.UnitOfRam : null
-                    });
+                        try
+                        {
+                            int technologyId = await context.Technology.GetIdByNameAsync(technology) ??
+                                               await context.Technology.SaveAsync(technology);
+
+                            await context.Technology.SaveConnectToDeviceAsync(deviceId, technologyId);
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.WriteLine(exception.Message);
+                        }
+                    }
+
+                    if (device.Dimension != null)
+                    {
+                        try
+                        {
+                            await context.Dimension.SaveAsync(new DimensionDTO()
+                            {
+                                DeviceId = deviceId,
+                                Depth = decimal.Parse(string.Format(TwoDigitsPattern, device.Dimension.Depth)),
+                                Width = decimal.Parse(string.Format(TwoDigitsPattern, device.Dimension.Width)),
+                                Height = decimal.Parse(string.Format(TwoDigitsPattern, device.Dimension.Height))
+                            });
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.WriteLine(exception.Message);
+                        }
+                    }
+
+                    foreach (Camera camera in device.Cameras)
+                    {
+                        try
+                        {
+                            await context.Camera.SaveAsync(new CameraDTO()
+                            {
+                                DeviceId = deviceId,
+                                Pixel = decimal.Parse(string.Format(TwoDigitsPattern, camera.Pixel)),
+                                Type = camera.Type,
+                                Position = camera.Position.ToString().ToUpper()
+                            });
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.WriteLine(exception.Message);
+                        }
+                    }
+
+                    foreach (MemoryCapacity memory in device.Memories)
+                    {
+                        try
+                        {
+                            await context.Memory.SaveAsync(new MemoryDTO()
+                            {
+                                DeviceId = deviceId,
+                                MemorySize = decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfInternal)),
+                                MemoryUnit = memory.UnitOfInternal,
+                                RamSize = memory.SizeOfRam != null
+                                    ? decimal.Parse(string.Format(TwoDigitsPattern, memory.SizeOfRam))
+                                    : null,
+                                RamUnit = memory.SizeOfRam != null ? memory.UnitOfRam : null
+                            });
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.WriteLine(exception.Message);
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Debug.WriteLine(exception.Message);
                 }
             }
+
+            DataBinding.Clear();
+            
+            saveBtn.IsEnabled = !saveBtn.IsEnabled;
         }
 
 
         private async void CreateTablesBtn_OnClick(object sender, RoutedEventArgs e)
         {
+            createTablesBtn.IsEnabled = !createTablesBtn.IsEnabled;
+            
             ApplicationContext context = new ApplicationContext(DatabaseDataBinding.ConnectionString);
 
-            await context.CreateTable();
+            try
+            {
+                await context.CreateTable();
+                MessageBox.Show("Table has been created");
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
+            }
+            
+            createTablesBtn.IsEnabled = !createTablesBtn.IsEnabled;
         }
 
         private void ExcelBtn_OnClick(object sender, RoutedEventArgs e)
