@@ -91,10 +91,10 @@ public class DeviceRepository
                     await connection.CloseAsync();
                 }
             }
+            
+            id = await GetIdByUrl(entry.Url);
         }
-
-        id = await GetIdByUrl(entry.Url);
-
+        
         return id ?? 0;
     }
 

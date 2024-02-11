@@ -53,25 +53,31 @@ public class OperationSystemRepository
     
     public async Task<int> SaveAsync(string name)
     {
-        using (MySqlConnection connection = new MySqlConnection(ConnectionString))
+        int? result = await GetIdByNameAsync(name);
+        if (result is null)
         {
-            using (MySqlCommand command = connection.CreateCommand())
+            using (MySqlConnection connection = new MySqlConnection(ConnectionString))
             {
-                command.CommandType = CommandType.Text;
-                command.CommandText = $"INSERT INTO {TableName}(`name`) VALUES(@name)";
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = $"INSERT INTO {TableName}(`name`) VALUES(@name)";
 
-                command.Parameters.Clear();
-                command.Parameters.Add(new MySqlParameter("@name", name));
+                    command.Parameters.Clear();
+                    command.Parameters.Add(new MySqlParameter("@name", name));
 
-                await connection.OpenAsync();
+                    await connection.OpenAsync();
 
-                await command.ExecuteNonQueryAsync();
+                    await command.ExecuteNonQueryAsync();
 
-                await connection.CloseAsync();
-                        
+                    await connection.CloseAsync();
+
+                }
             }
-        }
 
-        return await GetIdByNameAsync(name) ?? 0;
+            result = await GetIdByNameAsync(name);
+        }
+        
+        return result ?? 0;
     }
 }

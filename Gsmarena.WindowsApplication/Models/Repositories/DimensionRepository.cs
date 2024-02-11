@@ -1,10 +1,11 @@
 ﻿using System.Data;
 using System.Threading.Tasks;
+using Gsmarena.WindowsApplication.Models.DataTransfers;
 using MySql.Data.MySqlClient;
 
 namespace Gsmarena.WindowsApplication.Models.Repositories;
 
-public class BrandRepository
+public class DimensionRepository
 {
     protected string ConnectionString { get; }
 
@@ -12,16 +13,16 @@ public class BrandRepository
     {
         get
         {
-            return "`brands`";
+            return "`networks`";
         }
     }
 
-    public BrandRepository(string connectionString)
+    public DimensionRepository(string connectionString)
     {
         ConnectionString = connectionString;
     }
-    
-    public async Task<int?> GetIdByNameAsync(string name)
+
+    public async Task<int?> GetIdByDeviceIdAsync(int deviceId)
     {
         int? result = null;
         
@@ -30,10 +31,10 @@ public class BrandRepository
             using (MySqlCommand command = connection.CreateCommand())
             {
                 command.CommandType = CommandType.Text;
-                command.CommandText = $"SELECT `id` FROM {TableName} WHERE `name` = @name";
+                command.CommandText = $"SELECT `id` FROM {TableName} WHERE `device_id` = @device_id";
 
                 command.Parameters.Clear();
-                command.Parameters.Add(new MySqlParameter("@name", name));
+                command.Parameters.Add(new MySqlParameter("@device_id", deviceId));
 
                 await connection.OpenAsync();
 
@@ -55,10 +56,9 @@ public class BrandRepository
         return result;
     }
     
-    public async Task<int> SaveAsync(string name)
+    public async Task<int> SaveAsync(DimensionDTO entry)
     {
-        int? result = await GetIdByNameAsync(name);
-        
+        int? result = await GetIdByDeviceIdAsync(entry.DeviceId);
         if (result is null)
         {
             using (MySqlConnection connection = new MySqlConnection(ConnectionString))
@@ -66,10 +66,14 @@ public class BrandRepository
                 using (MySqlCommand command = connection.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = $"INSERT INTO {TableName}(`name`) VALUES(@name)";
+                    command.CommandText =
+                        $"INSERT INTO {TableName}(`device_id`, `height`, `width`, `depth`) VALUES(@device_id, @height, @width, @depth)";
 
                     command.Parameters.Clear();
-                    command.Parameters.Add(new MySqlParameter("@name", name));
+                    command.Parameters.Add(new MySqlParameter("@device_id", entry.DeviceId));
+                    command.Parameters.Add(new MySqlParameter("@height", entry.Height));
+                    command.Parameters.Add(new MySqlParameter("@width", entry.Width));
+                    command.Parameters.Add(new MySqlParameter("@depth", entry.Depth));
 
                     await connection.OpenAsync();
 
@@ -79,10 +83,11 @@ public class BrandRepository
 
                 }
             }
-
-            result = await GetIdByNameAsync(name);
         }
+
+        result = await GetIdByDeviceIdAsync(entry.DeviceId);
 
         return result ?? 0;
     }
+
 }

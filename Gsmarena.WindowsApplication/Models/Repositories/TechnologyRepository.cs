@@ -4,15 +4,16 @@ using MySql.Data.MySqlClient;
 
 namespace Gsmarena.WindowsApplication.Models.Repositories;
 
-public class NetworkRepository
+public class TechnologyRepository
 {
+    
     protected string ConnectionString { get; }
 
     protected string TableName
     {
         get
         {
-            return "`networks`";
+            return "`technologies`";
         }
     }
     
@@ -20,11 +21,11 @@ public class NetworkRepository
     {
         get
         {
-            return "`devices_networks`";
+            return "`devices_technologies`";
         }
     }
 
-    public NetworkRepository(string connectionString)
+    public TechnologyRepository(string connectionString)
     {
         ConnectionString = connectionString;
     }
@@ -66,6 +67,7 @@ public class NetworkRepository
     public async Task<int> SaveAsync(string name)
     {
         int? result = await GetIdByNameAsync(name);
+        
         if (result is null)
         {
             using (MySqlConnection connection = new MySqlConnection(ConnectionString))
@@ -86,16 +88,14 @@ public class NetworkRepository
 
                 }
             }
-            
+
             result = await GetIdByNameAsync(name);
         }
-
-        
 
         return result ?? 0;
     }
 
-    public async Task<int?> GetConnectIdByDeviceIdAsync(int deviceId, int networkId)
+    public async Task<int?> GetConnectIdByDeviceIdAsync(int deviceId, int technologyId)
     {
         int? result = null;
         
@@ -104,11 +104,11 @@ public class NetworkRepository
             using (MySqlCommand command = connection.CreateCommand())
             {
                 command.CommandType = CommandType.Text;
-                command.CommandText = $"SELECT `id` FROM {ConnectTableName} WHERE `device_id` = @device_id AND `network_id` = @network_id";
+                command.CommandText = $"SELECT `id` FROM {ConnectTableName} WHERE `device_id` = @device_id AND `technology_id` = @technology_id";
 
                 command.Parameters.Clear();
                 command.Parameters.Add(new MySqlParameter("@device_id", deviceId));
-                command.Parameters.Add(new MySqlParameter("@network_id", networkId));
+                command.Parameters.Add(new MySqlParameter("@technology_id", technologyId));
 
                 await connection.OpenAsync();
 
@@ -130,9 +130,9 @@ public class NetworkRepository
         return result;
     }
     
-    public async Task<int> SaveConnectToDeviceAsync(int deviceId, int networkId)
+    public async Task<int> SaveConnectToDeviceAsync(int deviceId, int technologyId)
     {
-        int? result = await GetConnectIdByDeviceIdAsync(deviceId, networkId);
+        int? result = await GetConnectIdByDeviceIdAsync(deviceId, technologyId);
 
         if (result is null)
         {
@@ -143,11 +143,11 @@ public class NetworkRepository
                 {
                     command.CommandType = CommandType.Text;
                     command.CommandText =
-                        $"INSERT INTO {ConnectTableName} (`device_id`, `network_id`) VALUES (@device_id, @network_id)";
+                        $"INSERT INTO {ConnectTableName} (`device_id`, `technology_id`) VALUES (@device_id, @technology_id)";
 
                     command.Parameters.Clear();
                     command.Parameters.Add(new MySqlParameter("@device_id", deviceId));
-                    command.Parameters.Add(new MySqlParameter("@network_id", networkId));
+                    command.Parameters.Add(new MySqlParameter("@technology_id", technologyId));
 
                     await connection.OpenAsync();
 
@@ -158,9 +158,9 @@ public class NetworkRepository
                 }
             }
             
-            result = await GetConnectIdByDeviceIdAsync(deviceId, networkId);
+            result = await GetConnectIdByDeviceIdAsync(deviceId, technologyId);
         }
-
+        
         return result ?? 0;
     }
 }
