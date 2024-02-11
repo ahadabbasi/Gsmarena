@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `technologies`;
 CREATE TABLE `brands`
 (
     `id`   INTEGER AUTO_INCREMENT NOT NULL,
-    `name` NVARCHAR(200)          NOT NULL,
+    `name` NVARCHAR(200)          NULL,
     PRIMARY KEY (`id`)
 )
     CHARACTER SET `utf8mb4`
@@ -32,7 +32,7 @@ CREATE TABLE `brands`
 CREATE TABLE `networks`
 (
     `id`   INTEGER AUTO_INCREMENT NOT NULL,
-    `name` NVARCHAR(200)          NOT NULL,
+    `name` NVARCHAR(200)          NULL,
     PRIMARY KEY (`id`)
 )
     CHARACTER SET `utf8mb4`
@@ -41,7 +41,7 @@ CREATE TABLE `networks`
 CREATE TABLE `unit_of_memories`
 (
     `id`        INTEGER AUTO_INCREMENT NOT NULL,
-    `name`      NVARCHAR(200)          NOT NULL,
+    `name`      NVARCHAR(200)          NULL,
     `parent_id` INTEGER                NULL,
     `exchange`  INTEGER                NULL,
     PRIMARY KEY (`id`),
@@ -53,7 +53,7 @@ CREATE TABLE `unit_of_memories`
 CREATE TABLE `technologies`
 (
     `id`   INTEGER AUTO_INCREMENT NOT NULL,
-    `name` NVARCHAR(200)          NOT NULL,
+    `name` NVARCHAR(200)          NULL,
     PRIMARY KEY (`id`)
 )
     CHARACTER SET `utf8mb4`
@@ -63,7 +63,7 @@ CREATE TABLE `technologies`
 CREATE TABLE `operation_systems`
 (
     `id`   INTEGER AUTO_INCREMENT NOT NULL,
-    `name` NVARCHAR(200)          NOT NULL,
+    `name` NVARCHAR(200)          NULL,
     PRIMARY KEY (`id`)
 )
     CHARACTER SET `utf8mb4`
@@ -72,20 +72,20 @@ CREATE TABLE `operation_systems`
 CREATE TABLE `devices`
 (
     `id`                       INTEGER AUTO_INCREMENT          NOT NULL,
-    `url`                      NVARCHAR(200)                   NOT NULL,
-    `name`                     NVARCHAR(200)                   NOT NULL,
-    `brand_id`                 INTEGER                         NOT NULL,
-    `type`                     ENUM ('PHONE','WATCH','TABLET') NOT NULL,
-    `display_ratio`            DECIMAL                         NOT NULL,
-    `display_size`             DECIMAL                         NOT NULL,
-    `weight`                   DECIMAL                         NOT NULL,
-    `battery_capacity`         INTEGER UNSIGNED                NOT NULL,
-    `pixel_per_inches`         INTEGER UNSIGNED                NOT NULL,
-    `processor_model`          NVARCHAR(200)                   NOT NULL,
-    `count_of_thread`          NVARCHAR(200)                   NOT NULL,
-    `price`                    DECIMAL                         NOT NULL,
-    `year_of_release`          DATE                            NOT NULL,
-    `operation_id`             INTEGER                         NOT NULL,
+    `url`                      NVARCHAR(200)                   NULL,
+    `name`                     NVARCHAR(200)                   NULL,
+    `brand_id`                 INTEGER                         NULL,
+    `type`                     ENUM ('PHONE','WATCH','TABLET') NULL,
+    `display_ratio`            DECIMAL                         NULL,
+    `display_size`             DECIMAL                         NULL,
+    `weight`                   DECIMAL                         NULL,
+    `battery_capacity`         INTEGER UNSIGNED                NULL,
+    `pixel_per_inches`         INTEGER UNSIGNED                NULL,
+    `processor_model`          NVARCHAR(200)                   NULL,
+    `count_of_thread`          NVARCHAR(200)                   NULL,
+    `price`                    DECIMAL                         NULL,
+    `year_of_release`          DATE                            NULL,
+    `operation_id`             INTEGER                         NULL,
     `operation_system_version` NVARCHAR(200)                   NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`),
@@ -98,9 +98,9 @@ CREATE TABLE `devices_dimensions`
 (
     `id`        INTEGER AUTO_INCREMENT NOT NULL,
     `device_id` INTEGER                NOT NULL,
-    `height`    DECIMAL UNSIGNED       NOT NULL,
-    `width`     DECIMAL UNSIGNED       NOT NULL,
-    `depth`     DECIMAL UNSIGNED       NOT NULL,
+    `height`    DECIMAL UNSIGNED       NULL,
+    `width`     DECIMAL UNSIGNED       NULL,
+    `depth`     DECIMAL UNSIGNED       NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`)
 )
@@ -110,8 +110,8 @@ CREATE TABLE `devices_dimensions`
 CREATE TABLE `devices_cameras`
 (
     `id`        INTEGER AUTO_INCREMENT NOT NULL,
-    `pixel`     DECIMAL                NOT NULL,
-    `position`  ENUM ('BACK', 'FRONT') NOT NULL,
+    `pixel`     DECIMAL                NULL,
+    `position`  ENUM ('BACK', 'FRONT') NULL,
     `type`      NVARCHAR(200)          NULL,
     `device_id` INTEGER                NOT NULL,
     PRIMARY KEY (`id`),
@@ -148,8 +148,8 @@ CREATE TABLE `devices_memories`
 (
     `id`             INTEGER AUTO_INCREMENT NOT NULL,
     `device_id`      INTEGER                NOT NULL,
-    `memory_size`    DECIMAL                NOT NULL,
-    `memory_unit_id` INTEGER                NOT NULL,
+    `memory_size`    DECIMAL                NULL,
+    `memory_unit_id` INTEGER                NULL,
     `ram_size`       DECIMAL                NULL,
     `ram_unit_id`    INTEGER                NULL,
     PRIMARY KEY (`id`),
