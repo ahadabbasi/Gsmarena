@@ -1,6 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace Gsmarena.WindowsApplication.Models.ViewModels;
 
@@ -21,7 +28,7 @@ public class ExcelVM : INotifyPropertyChanged
         return true;
     }
 
-    private string _brand = "";
+    private string _brand = "BA";
 
     public string Brand
     {
@@ -32,8 +39,20 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Brand));
         }
     }
-    
-    private string _url = "B";
+
+    private string _type = "BB";
+
+    public string Type
+    {
+        get { return _type; }
+        set
+        {
+            _type = value;
+            OnPropertyChanged(nameof(Type));
+        }
+    }
+
+    private string _url = "C";
 
     public string Url
     {
@@ -44,8 +63,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Url));
         }
     }
-    
-    private string _name = "C";
+
+    private string _name = "D";
 
     public string Name
     {
@@ -56,8 +75,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Name));
         }
     }
-    
-    private string _networks = "D";
+
+    private string _networks = "E";
 
     public string Networks
     {
@@ -68,8 +87,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Networks));
         }
     }
-    
-    private string _operationSystem = "S";
+
+    private string _operationSystem = "T";
 
     public string OperationSystem
     {
@@ -80,8 +99,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Networks));
         }
     }
-    
-    private string _cpuModel = "U";
+
+    private string _cpuModel = "V";
 
     public string CpuModel
     {
@@ -92,9 +111,9 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(CpuModel));
         }
     }
-    
+
     //DisplaySize
-    private string _countOfThread = "V";
+    private string _countOfThread = "W";
 
     public string CountOfThread
     {
@@ -105,8 +124,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(CountOfThread));
         }
     }
-    
-    private string _displaySize = "M";
+
+    private string _displaySize = "N";
 
     public string DisplaySize
     {
@@ -117,8 +136,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(DisplaySize));
         }
     }
-    
-    private string _batteryCapacity = "AS";
+
+    private string _batteryCapacity = "AT";
 
     public string BatteryCapacity
     {
@@ -129,8 +148,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(BatteryCapacity));
         }
     }
-    
-    private string _weight = "I";
+
+    private string _weight = "J";
 
     public string Weight
     {
@@ -141,8 +160,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Weight));
         }
     }
-    
-    private string _operationSystemVersion = "T";
+
+    private string _operationSystemVersion = "U";
 
     public string OperationSystemVersion
     {
@@ -153,8 +172,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(OperationSystemVersion));
         }
     }
-    
-    private string _dimension = "H";
+
+    private string _dimension = "I";
 
     public string Dimension
     {
@@ -165,9 +184,9 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Dimension));
         }
     }
-    
-    
-    private string _displayRatio = "O";
+
+
+    private string _displayRatio = "P";
 
     public string DisplayRatio
     {
@@ -178,9 +197,9 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(DisplayRatio));
         }
     }
-    
-    
-    private string _resolution = "P";
+
+
+    private string _resolution = "Q";
 
     public string Resolution
     {
@@ -191,8 +210,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Resolution));
         }
     }
-    
-    private string _releaseDate = "F";
+
+    private string _releaseDate = "G";
 
     public string ReleaseDate
     {
@@ -203,8 +222,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(ReleaseDate));
         }
     }
-    
-    private string _announceDate = "E";
+
+    private string _announceDate = "F";
 
     public string AnnounceDate
     {
@@ -215,8 +234,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(AnnounceDate));
         }
     }
-    
-    private string _memoryInternal = "Y";
+
+    private string _memoryInternal = "Z";
 
     public string MemoryInternal
     {
@@ -227,8 +246,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(MemoryInternal));
         }
     }
-    
-    private string _mainCamera = "AA";
+
+    private string _mainCamera = "AB";
 
     public string MainCamera
     {
@@ -239,8 +258,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(MainCamera));
         }
     }
-    
-    private string _selfieCamera = "AE";
+
+    private string _selfieCamera = "AF";
 
     public string SelfieCamera
     {
@@ -251,9 +270,9 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(SelfieCamera));
         }
     }
-    
-    
-    private string _technology = "K";
+
+
+    private string _technology = "L";
 
     public string Technology
     {
@@ -264,8 +283,8 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Technology));
         }
     }
-    
-    private string _price = "AW";
+
+    private string _price = "AX";
 
     public string Price
     {
@@ -275,5 +294,53 @@ public class ExcelVM : INotifyPropertyChanged
             _price = value;
             OnPropertyChanged(nameof(Price));
         }
+    }
+
+    [JsonIgnore]
+    private static string FilePath
+    {
+        get
+        {
+            return Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                $"{nameof(ExcelWindow).Replace(nameof(Window), string.Empty)}.json"
+            );
+        }
+    }
+
+    public async Task SaveAsync()
+    {
+        if (File.Exists(FilePath))
+        {
+            File.Delete(FilePath);
+        }
+
+        using (FileStream file = File.Create(FilePath))
+        {
+            byte[] content = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }));
+
+            await file.WriteAsync(content, 0, content.Length);
+        }
+    }
+
+    public static ExcelVM Read()
+    {
+        ExcelVM result = new ExcelVM();
+
+        if (File.Exists(FilePath))
+        {
+            string fileContent = File.ReadAllText(FilePath);
+            result = JsonSerializer.Deserialize<ExcelVM>(fileContent, new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }) ?? result;
+        }
+
+        return result;
     }
 }

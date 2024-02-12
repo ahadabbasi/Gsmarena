@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:Gsmarena.WindowsApplication"
         mc:Ignorable="d"
-        Title="Excel Window" WindowStartupLocation="CenterScreen" Height="700" Width="800">
+        Title="Excel Window" WindowStartupLocation="CenterScreen" Height="800" Width="800">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -19,7 +19,7 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
-            <RowDefinition Height="0.15*" />
+            <RowDefinition Height="0.6*" />
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
@@ -216,10 +216,19 @@
             <TextBox Grid.Row="1" Text="{Binding Path=Dimension, Mode=TwoWay}" />
         </Grid>
         
+        <Grid Margin="5" Grid.Row="10" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" Text="Type" />
+            <TextBox Grid.Row="1" Text="{Binding Path=Type, Mode=TwoWay}" />
+        </Grid>
+        
         <Grid Grid.Row="11" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition Width="0.15*" />
+                <ColumnDefinition Width="0.25*" />
             </Grid.ColumnDefinitions>
             
             <Button Grid.Column="1" Content="Save" x:Name="SaveBtn" Click="SaveBtn_OnClick" />

@@ -19,11 +19,13 @@ public class MainVM : INotifyPropertyChanged, IEnumerable<Device>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private IList<Device> _devices = new List<Device>();
+    private IDictionary<int, IList<Device>> _devices = new Dictionary<int, IList<Device>>();
+
+    private int key = 0;
     
     public IEnumerable<string> Devices
     {
-        get { return _devices.Select(device => device.Name); }
+        get { return _devices.SelectMany(device => device.Value).Select(device => device.Name); }
     }
 
     public Device? Choose
@@ -40,7 +42,7 @@ public class MainVM : INotifyPropertyChanged, IEnumerable<Device>
         set
         {
             _selected = value;
-            Choose = _devices.FirstOrDefault(device => device.Name.Equals(value));
+            Choose = _devices.SelectMany(pair => pair.Value).FirstOrDefault(device => device.Name.Equals(value));
             OnPropertyChanged(nameof(Choose));
             OnPropertyChanged(nameof(Selected));
         }
@@ -88,7 +90,18 @@ public class MainVM : INotifyPropertyChanged, IEnumerable<Device>
                 break;
             }
         }
-        _devices.Add(item);
+
+        if (!_devices.ContainsKey(key))
+        {
+            _devices.Add(key, new List<Device>());
+        }
+        
+        _devices[key].Add(item);
+
+        if (_devices[key].Count == 300)
+        {
+            key++;
+        }
 
         OnPropertyChanged(nameof(Devices));
     }
@@ -100,14 +113,14 @@ public class MainVM : INotifyPropertyChanged, IEnumerable<Device>
 
     public void Delete(Device item)
     {
-        _devices.Remove(item);
+        //_devices.Remove(item);
         OnPropertyChanged(nameof(Devices));
         Selected = string.Empty;
     }
 
     public IEnumerator<Device> GetEnumerator()
     {
-        return _devices.GetEnumerator();
+        return _devices.SelectMany(pair => pair.Value).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
