@@ -392,6 +392,7 @@ namespace Gsmarena.WindowsApplication
                 Debug.WriteLine(exception.Message);
             }
             
+            excelBtn.IsEnabled = !excelBtn.IsEnabled;
             chooseBtn.IsEnabled = !chooseBtn.IsEnabled;
         }
 
@@ -409,7 +410,9 @@ namespace Gsmarena.WindowsApplication
 
         private async void SaveBtn_OnClick(object sender, RoutedEventArgs e)
         {
+            databaseBtn.IsEnabled = !databaseBtn.IsEnabled;
             saveBtn.IsEnabled = !saveBtn.IsEnabled;
+            createTablesBtn.IsEnabled = !createTablesBtn.IsEnabled;
             
             ApplicationContext context = new ApplicationContext(DatabaseDataBinding.ConnectionString);
 
@@ -538,13 +541,16 @@ namespace Gsmarena.WindowsApplication
             DataBinding.Clear();
             
             saveBtn.IsEnabled = !saveBtn.IsEnabled;
-            excelBtn.IsEnabled = !excelBtn.IsEnabled;
+            createTablesBtn.IsEnabled = !createTablesBtn.IsEnabled;
+            databaseBtn.IsEnabled = !databaseBtn.IsEnabled;
         }
 
 
         private async void CreateTablesBtn_OnClick(object sender, RoutedEventArgs e)
         {
             createTablesBtn.IsEnabled = !createTablesBtn.IsEnabled;
+            saveBtn.IsEnabled = !saveBtn.IsEnabled;
+            databaseBtn.IsEnabled = !databaseBtn.IsEnabled;
             
             ApplicationContext context = new ApplicationContext(DatabaseDataBinding.ConnectionString);
 
@@ -559,6 +565,8 @@ namespace Gsmarena.WindowsApplication
             }
             
             createTablesBtn.IsEnabled = !createTablesBtn.IsEnabled;
+            saveBtn.IsEnabled = !saveBtn.IsEnabled;
+            databaseBtn.IsEnabled = !databaseBtn.IsEnabled;
         }
 
         private void ExcelBtn_OnClick(object sender, RoutedEventArgs e)
