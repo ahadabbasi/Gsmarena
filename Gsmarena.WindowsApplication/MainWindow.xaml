@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Main Window" WindowStartupLocation="CenterScreen" Height="800" Width="1000">
+        Title="Main Window" WindowStartupLocation="CenterScreen" Height="800" Width="1300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -33,6 +33,7 @@
                 <Grid Grid.Row="0">
 
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
                         <ColumnDefinition />
                         <ColumnDefinition />
                         <ColumnDefinition />
@@ -74,6 +75,15 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Cameras" />
                         <ListBox Grid.Row="1" ItemsSource="{Binding Path=CamerasDescription, Mode=OneWay}" />
+                    </Grid>
+                    
+                    <Grid Margin="5" Grid.Column="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.35*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="Sensors" />
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Path=Sensors, Mode=OneWay}" />
                     </Grid>
                     
                 </Grid>
@@ -323,6 +333,8 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Margin="5" Content="Config excel column file" x:Name="excelBtn" Click="ExcelBtn_OnClick" />
             <Button Grid.Column="1" Margin="5" Content="Delete from list" x:Name="deleteBtn" Click="DeleteBtn_OnClick" />
@@ -330,6 +342,8 @@
             <Button Grid.Column="3" Margin="5" Content="Config database" x:Name="databaseBtn" Click="DatabaseBtn_OnClick" />
             <Button Grid.Column="4" Margin="5" Content="Create tables" x:Name="createTablesBtn" Click="CreateTablesBtn_OnClick" />
             <Button Grid.Column="5" Margin="5" Content="Save to database" x:Name="saveBtn" Click="SaveBtn_OnClick" />
+            <Button Grid.Column="6" Margin="5" Content="Show the count" x:Name="countBtn" Click="CountBtn_OnClick" />
+            <Button Grid.Column="7" Margin="5" Content="Convert and save" x:Name="convertAndSaveBtn" Click="ConvertAndSaveBtn_OnClick" />
         </Grid>
     </Grid>
 </Window>

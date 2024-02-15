@@ -1,4 +1,6 @@
-﻿DROP TABLE IF EXISTS `devices_dimensions`;
+﻿DROP TABLE IF EXISTS `devices_sensors`;
+
+DROP TABLE IF EXISTS `devices_dimensions`;
 
 DROP TABLE IF EXISTS `devices_cameras`;
 
@@ -20,7 +22,18 @@ DROP TABLE IF EXISTS `operation_systems`;
 
 DROP TABLE IF EXISTS `technologies`;
 
+DROP TABLE IF EXISTS `sensors`;
+
 CREATE TABLE `brands`
+(
+    `id`   INTEGER AUTO_INCREMENT NOT NULL,
+    `name` NVARCHAR(200)          NULL,
+    PRIMARY KEY (`id`)
+)
+    CHARACTER SET `utf8mb4`
+    COLLATE `utf8mb4_general_ci`;
+
+CREATE TABLE `sensors`
 (
     `id`   INTEGER AUTO_INCREMENT NOT NULL,
     `name` NVARCHAR(200)          NULL,
@@ -140,6 +153,18 @@ CREATE TABLE `devices_technologies`
     PRIMARY KEY (`id`),
     FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`),
     FOREIGN KEY (`technology_id`) REFERENCES `technologies` (`id`)
+)
+    CHARACTER SET `utf8mb4`
+    COLLATE `utf8mb4_general_ci`;
+
+CREATE TABLE `devices_sensors`
+(
+    `id`            INTEGER AUTO_INCREMENT NOT NULL,
+    `device_id`     INTEGER                NOT NULL,
+    `sensor_id` INTEGER                NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`),
+    FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`)
 )
     CHARACTER SET `utf8mb4`
     COLLATE `utf8mb4_general_ci`;

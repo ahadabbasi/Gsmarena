@@ -134,6 +134,21 @@ public class ApplicationContext
             return _memory;
         }
     }
+    
+    private SensorRepository? _sensor;
+
+    public SensorRepository Sensor
+    {
+        get
+        {
+            if (_sensor == null)
+            {
+                _sensor = new SensorRepository(ConnectionString);
+            }
+
+            return _sensor;
+        }
+    }
 
     public async Task CreateTable()
     {

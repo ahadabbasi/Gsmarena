@@ -122,6 +122,8 @@ public class Device
         }
     }
 
+
+    public IEnumerable<string> Sensors { get; set; } = new string[] { };
     public Dimension? Dimension { get; set; } = null;
     public IEnumerable<Camera> Cameras { get; set; } = new Camera[] { };
     public string Brand { get; set; } = string.Empty;

@@ -21,11 +21,18 @@ public class MainVM : INotifyPropertyChanged, IEnumerable<Device>
 
     private IDictionary<int, IList<Device>> _devices = new Dictionary<int, IList<Device>>();
 
-    private int key = 0;
+    private int Key { get; set; } = 0;
+    private int Count { get; set; } = 0;
+    
+    private string SearchKey
+    {
+        get { return "Has problem at"; }
+    }
     
     public IEnumerable<string> Devices
     {
-        get { return _devices.SelectMany(device => device.Value).Select(device => device.Name); }
+        get;
+        private set;
     }
 
     public Device? Choose
@@ -91,29 +98,40 @@ public class MainVM : INotifyPropertyChanged, IEnumerable<Device>
             }
         }
 
-        if (!_devices.ContainsKey(key))
+        if (!_devices.ContainsKey(Key))
         {
-            _devices.Add(key, new List<Device>());
+            _devices.Add(Key, new List<Device>());
         }
         
-        _devices[key].Add(item);
+        _devices[Key].Add(item);
 
-        if (_devices[key].Count == 300)
+        if (_devices[Key].Count == 300)
         {
-            key++;
+            Key++;
         }
+
+        if (item.Name.Contains(SearchKey) == false)
+        {
+            Count++;
+        }
+        
+        Devices = _devices.SelectMany(device => device.Value)
+            .Select(device => device.Name);
 
         OnPropertyChanged(nameof(Devices));
     }
 
     private void ChangeItemName(Device item, string propertyName)
     {
-        item.Name = $"{item.Name} - Has problem at {propertyName}";
+        item.Name = $"{item.Name} - {SearchKey} {propertyName}";
     }
 
-    public void Delete(Device item)
+    public void Delete(string name)
     {
-        //_devices.Remove(item);
+        Devices = _devices.SelectMany(device => device.Value)
+            .Where(device => device.Name != name)
+            .Select(device => device.Name);
+        
         OnPropertyChanged(nameof(Devices));
         Selected = string.Empty;
     }
@@ -133,5 +151,10 @@ public class MainVM : INotifyPropertyChanged, IEnumerable<Device>
         _devices.Clear();
         
         OnPropertyChanged(nameof(Devices));
+    }
+
+    public int GetCout()
+    {
+        return Count;
     }
 }

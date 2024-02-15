@@ -295,6 +295,18 @@ public class ExcelVM : INotifyPropertyChanged
             OnPropertyChanged(nameof(Price));
         }
     }
+    
+    private string _sensors = "AR";
+
+    public string Sensors
+    {
+        get { return _sensors; }
+        set
+        {
+            _sensors = value;
+            OnPropertyChanged(nameof(Sensors));
+        }
+    }
 
     [JsonIgnore]
     private static string FilePath
